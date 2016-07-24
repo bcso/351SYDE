@@ -18,19 +18,21 @@ def model(y, t):
     m = 0.68 # Mass of pendulum
     k = 300 # Stiffness of Spring
     Y = 0
-    R = 0.1 # Torsional Resistance
+    b = 0.5 # Torsional Resistance
+    R = 0.8  # Friction
     L = 0.61  # Length of Pendulum
     g = 9.81 # Gravitional acceleration
 
     # in between terms
     disp = (yk - Y)
 
-    d_yk = (tan(theta) * vx) + vy 
-    d_theta = vx / L * cos(theta)
-    d_vx = ((-tan(theta)) * k / m * disp) - ((R*vx) / (m * (L * cos(theta))**2)) 
-    d_vy = (-k / m * disp) + g
+    d_yk = vy + ( (L**2) * sin(theta) * cos(theta) * vx) 
+    d_theta = L * cos(theta) * vx 
+    d_vy = g + ( -R * d_yk - k * yk)
+    d_vx = (L * cos(theta)) / ( 1 +  ((L**4)/12) * (cos(theta) ** 2)) * ((L**3 / 12 * d_theta * sin(theta) * vx) + (L * sin(theta) * d_vy) - (L * sin(theta) * g) - (d_theta * b / m))
 
     return [d_yk, d_theta, d_vx, d_vy]
+
 
 time = np.linspace(0.0, 20.0, 100)
 yinit = [0, pi/4, 0, 0]
